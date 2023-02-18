@@ -25,7 +25,7 @@ def SQLIteDB():
 
     # Define the DataFrame with columns StudentSchoolID, LastName, FirstName
 
-    df = pd.DataFrame({
+    df = pd.DataFrame({ 
     'StudentSchoolID': ['123', '456', '789', '453'],
     'LastName': ['Smith', 'Johnson', 'Williams','Osei Akoto'],
     'FirstName': ['John', 'Mary', 'James', 'Kwame'],
