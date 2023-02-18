@@ -1,46 +1,53 @@
 import pandas as pd
 import sqlite3
 import uuid
+from Activestudents import ActiveStudents
 
-
-def SQLIteDB():
-    # Create/connect to a sqlite database
-    connection = sqlite3.connect('NAU.db')
-
-    # Create the Students table
-    cur = connection.cursor()
+def create_students_table(conn):
+    cur = conn.cursor()
     cur.execute('''
-    CREATE TABLE Students (
+        CREATE TABLE IF NOT EXISTS Students (
       InternalID INTEGER PRIMARY KEY AUTOINCREMENT,
       SchoolID INTEGER,
       LastName TEXT,
       FirstName TEXT,
       StudentSchoolID TEXT,
-      AdditionalSchools TEXT,
       SourceTagID INTEGER,
       FOREIGN KEY (SchoolID) REFERENCES Schools(SchoolID),
       FOREIGN KEY (SourceTagID) REFERENCES SourceTags(SourceTagID)
-    )
+        )
     ''')
 
-    # Define the DataFrame with columns StudentSchoolID, LastName, FirstName
+def add_students_to_database(conn):
+    # Get the active students DataFrame
+    active_students = ActiveStudents()
+    student_df = active_students[['SchoolStudentID', 'LastName', 'FirstName']]
 
-    df = pd.DataFrame({ 
-    'StudentSchoolID': ['123', '456', '789', '453'],
-    'LastName': ['Smith', 'Johnson', 'Williams','Osei Akoto'],
-    'FirstName': ['John', 'Mary', 'James', 'Kwame'],
-    'SchoolID': ['1123', '1123', '1123', '1123']
-    })
     # Generate unique IDs for each student
-    df['StudentID'] = [str(uuid.uuid4()) for _ in range(len(df))]
+    student_df['SchoolID'] = [str(uuid.uuid4()) for _ in range(len(student_df))]
 
-    # Add the students to the database
-    for i, row in df.iterrows():
+    # Set the SchoolID to '2' for all rows
+    student_df['SchoolID'] = '2'
+
+    # Update or insert students into the database
+    cur = conn.cursor()
+    for _, row in student_df.iterrows():
         cur.execute('''
-        INSERT INTO Students (SchoolID, LastName, FirstName, StudentSchoolID)
-         VALUES (?, ?, ?, ?)
-    ''', (row['SchoolID'], row['LastName'], row['FirstName'], row['StudentSchoolID']))
-    connection.commit()
+            UPDATE Students SET LastName=?, FirstName=?, SchoolID=?
+            WHERE StudentSchoolID=?
+        ''', (row['LastName'], row['FirstName'], row['SchoolID'], row['SchoolStudentID']))
+        if cur.rowcount == 0:
+            cur.execute('''
+                INSERT INTO Students (SchoolID, LastName, FirstName, StudentSchoolID)
+                VALUES (?, ?, ?, ?)
+            ''', (row['SchoolID'], row['LastName'], row['FirstName'], row['SchoolStudentID']))
+    conn.commit()
+
+def SQLIteDB():
+    # Create/connect to a sqlite database
+    with sqlite3.connect('NAU.db') as conn:
+        create_students_table(conn)
+        add_students_to_database(conn)
 
 SQLIteDB()
 
