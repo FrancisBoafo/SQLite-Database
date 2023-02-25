@@ -12,7 +12,7 @@ def SourceTagNames():
     Source_tag= pd.read_csv(sourcetag) 
     print(len(Source_tag))
     return Source_tag
-def SchoolNames():
+def SchoolNames(): 
     school = f"/Users/francisboafo/Library/CloudStorage/OneDrive-Personal/SQLite Database Environment/Datasets/Schools.xlsx"
     School_names = pd.read_excel(school)
     return School_names
