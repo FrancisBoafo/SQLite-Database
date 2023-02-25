@@ -156,6 +156,7 @@ def insert_and_update(conn):
         ''')
 
     #SET THE STUDENTID in STUDENTS TABLE TO 2
+    
     cur.execute("UPDATE Students SET SchoolID = 2;")
     # PLACES THE DATA INTO THE STUDENTS TABLE FOR THE SOURCETAGSID
                   # 
