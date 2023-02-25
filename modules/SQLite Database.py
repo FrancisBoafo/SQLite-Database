@@ -7,7 +7,7 @@ def create_students_table(conn):
     cur = conn.cursor()
     cur.execute('''
         CREATE TABLE IF NOT EXISTS Students (
-      InternalID INTEGER PRIMARY KEY AUTOINCREMENT,
+      InternalID INTEGER PRIMARY KEY AUTOINCREMENT, 
       SchoolID INTEGER,
       LastName TEXT,
       FirstName TEXT,
