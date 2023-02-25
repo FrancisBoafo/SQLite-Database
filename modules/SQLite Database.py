@@ -1,17 +1,17 @@
 import pandas as pd
 import sqlite3
-import uuid
+import uuid    
 
 import glob
 from Activestudents import ActiveStudents
 from Activestudents import SourceTagNames
 from Activestudents import SchoolNames
 
-def create_students_table(conn): 
+def create_students_table(conn):  
     # Create/connect to a sqlite database
     conn = sqlite3.connect('NAU.db') 
     cur = conn.cursor()
-    cur.execute(''' 
+    cur.execute('''  
             CREATE TABLE IF NOT EXISTS Students (
                 InternalID INTEGER PRIMARY KEY AUTOINCREMENT, 
                 SchoolID INTEGER,
